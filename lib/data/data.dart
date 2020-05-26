@@ -1,4 +1,7 @@
+import 'package:wallpaperapp/data/secret.dart';
 import 'package:wallpaperapp/model/categories_model.dart';
+
+String apiKey = api;
 
 List<CategorieModel> getCategories(){
 
