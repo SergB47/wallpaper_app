@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:wallpaperapp/data/data.dart';
 import 'package:wallpaperapp/model/categories_model.dart';
 import 'package:wallpaperapp/model/wallpaper_model.dart';
+import 'package:wallpaperapp/views/category.dart';
+import 'package:wallpaperapp/views/search.dart';
 import 'package:wallpaperapp/widgets/widget.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,6 +18,7 @@ class _HomeState extends State<Home> {
 
   List<CategorieModel> categories = new List();
   List<WallpaperModel> wallpapers = new List();
+  TextEditingController searchController = new TextEditingController();
 
   getTradingWallpapers() async{
     var response = await http.get("https://api.pexels.com/v1/curated?per_page=15&page=1",
@@ -62,13 +65,24 @@ class _HomeState extends State<Home> {
                 child: Row(children: <Widget>[
                   Expanded(
                       child: TextField(
+                        controller: searchController,
                       decoration: InputDecoration(
                       hintText: 'search',
                       border: InputBorder.none
                       ),
                     ),
                   ),
-                  Icon(Icons.search)
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context)=>Search(
+                          searchQuery: searchController.text,
+                        )
+                      ));
+                    },
+                    child: Container(
+                      child: Icon(Icons.search)),
+                  )
                 ],),
               ),
               SizedBox(height: 16,),
@@ -103,22 +117,29 @@ class CategoriesTitle extends StatelessWidget {
   CategoriesTitle({this.title, this.imgUrl});
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context)=> Category(categorieName: title.toLowerCase(),)
+        ));
+      },
+      child: Container(
       margin: EdgeInsets.only(right: 4),
       child: Stack(children: <Widget>[
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(imgUrl, height: 50, width: 100, fit: BoxFit.cover,)),
         Container(
-          
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.black26,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.black26,
           ),
-          alignment: Alignment.center,
-          height: 50, width: 100,
-          child: Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),))
-      ],)
+        alignment: Alignment.center,
+        height: 50,
+        width: 100,
+        child: Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 16),))
+        ],)
+      ),
     );
   }
 }
